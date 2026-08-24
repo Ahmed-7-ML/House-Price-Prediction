@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# uv
+.uv/
+uv.lock
+
+# Data & models (keep structure, ignore large files)
+data/raw/*
+data/processed/*
+data/features/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/features/.gitkeep
+models/artifacts/*
+!models/artifacts/.gitkeep
+mlruns/
+feature_repo/data/*.parquet
+feature_repo/data/*.db
+feature_repo/data/registry.db
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+.ipynb_checkpoints/
+
+# Notebooks output
+notebooks/eda_figures/

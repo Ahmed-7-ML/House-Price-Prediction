@@ -1,0 +1,55 @@
+# House Price Prediction - Central Configuration (Source of Truth)
+project:
+  name: house-price-mlops
+  version: "1.0.0"
+  seed: 42
+
+data:
+  raw_path: data/raw/california_housing.csv
+  processed_path: data/processed/housing_processed.parquet
+  features_path: data/features/housing_features.parquet
+  test_size: 0.2
+  validation_size: 0.1
+
+features:
+  numerical:
+    - MedInc
+    - HouseAge
+    - AveRooms
+    - AveBedrms
+    - Population
+    - AveOccup
+    - Latitude
+    - Longitude
+  target: MedHouseVal
+  engineered:
+    - RoomsPerHousehold
+    - BedroomsPerRoom
+    - PopulationPerHousehold
+
+model:
+  experiment_name: house_price_prediction
+  tracking_uri: sqlite:///tmp/mlflow_house_price.db
+  registry_uri: mlruns
+  models_to_try:
+    - linear_regression
+    - ridge
+    - random_forest
+    - gradient_boosting
+  best_model_metric: r2
+  cv_folds: 5
+
+training:
+  random_state: 42
+  n_jobs: -1
+
+serving:
+  host: "0.0.0.0"
+  port: 8000
+  model_name: house_price_model
+  model_stage: Production
+
+feature_store:
+  repo_path: feature_repo
+  offline_store: file
+  online_store: sqlite

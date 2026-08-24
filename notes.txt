@@ -1,0 +1,14 @@
+# 1. Package Manager -> uv
+# 2. Config -> YAML -> configs/config.yaml + pydantic-settings
+# 3. ETL -> Ingest (California Housing) → clean → engineer features → train/test split → Parquet/CSV/Pickle
+# 4. EDA -> Matplotlib + Seaborn (hist, heatmap, geo map, pairplot)
+# 5. Feature Store -> Feast local repo (feature_repo/) with entity + feature views
+# 6. Feature Pipeline -> scikit-learn Pipeline + ColumnTransformer (impute + scale)
+# 7. Models -> Linear, Ridge, Random Forest, Gradient Boosting, ....etc
+# 8. Tracking -> MLflow (SQLite backend, experiment + model registry)
+# 9. Serving  -> FastAPI + Pydantic Schemas (/predict, /health, /docs, /root)
+# 10. CLI -> Typer commands: ingest, preprocess, eda, train, evaluate, serve, pipeline
+# 11. Containers -> Dockerfile + docker-compose.yml (API + optional MLflow)
+
+----
+The separation of concerns (ingest → preprocess → features → train → serve) is intentional and production-friendly.
