@@ -1,9 +1,10 @@
 from datetime import timedelta
+
 from feast import FeatureView, Field, FileSource
-from feast.types import Float32, Int64
+from feast.types import Float32
+
 from entities import housing_entity
 
-# Offline sources
 housing_features_source = FileSource(
     path="data/housing_features.parquet",
     timestamp_field="event_timestamp",

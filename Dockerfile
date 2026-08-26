@@ -11,13 +11,12 @@ COPY src/ src/
 COPY configs/ configs/
 COPY models/ models/
 
-# Install with pip for container simplicity
 RUN pip install --no-cache-dir \
-    pandas numpy scikit-learn joblib \
-    fastapi uvicorn pydantic pydantic-settings \
-    pyyaml pyarrow rich typer httpx
+    pandas numpy scikit-learn joblib pyarrow pyyaml \
+    fastapi "uvicorn[standard]" pydantic pydantic-settings \
+    rich typer
 
-ENV PYTHONPATH=/app/src
+ENV PYTHONPATH=/app
 EXPOSE 8000
 
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

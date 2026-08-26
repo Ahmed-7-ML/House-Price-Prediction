@@ -13,7 +13,6 @@ build/
 
 # uv
 .uv/
-uv.lock
 
 # Data & models (keep structure, ignore large files)
 data/raw/*
@@ -25,7 +24,9 @@ data/features/*
 models/artifacts/*
 !models/artifacts/.gitkeep
 mlruns/
+tmp/*.db
 feature_repo/data/*.parquet
+feature_repo/data/*.csv
 feature_repo/data/*.db
 feature_repo/data/registry.db
 

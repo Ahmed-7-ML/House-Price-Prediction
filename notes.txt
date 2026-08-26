@@ -12,3 +12,9 @@
 
 ----
 The separation of concerns (ingest → preprocess → features → train → serve) is intentional and production-friendly.
+
+تنظيف مساحة ال UV Cache
+uv cache clean
+
+تنظيف مساحة ال Docker
+docker system prune -a

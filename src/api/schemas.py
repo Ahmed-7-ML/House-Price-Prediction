@@ -1,9 +1,9 @@
 """
-    Pydantic schemas for request / response validation.
+Pydantic schemas for request / response validation.
 """
 from pydantic import BaseModel, Field
 
-# ---> Define the Request/Input Format
+
 class HouseFeatures(BaseModel):
     MedInc: float = Field(..., description="Median income in block group", ge=0)
     HouseAge: float = Field(..., description="Median house age", ge=0, le=100)
@@ -31,8 +31,12 @@ class HouseFeatures(BaseModel):
         }
     }
 
-# ---> Define the Response/Output Format
+
 class PredictionResponse(BaseModel):
     predicted_price: float = Field(..., description="Predicted median house value (×$100k)")
     currency_hint: str = "Value is in units of $100,000 (e.g. 2.5 ≈ $250,000)"
     model_version: str = "1.0.0"
+
+
+class BatchPredictionResponse(BaseModel):
+    predictions: list[PredictionResponse]
