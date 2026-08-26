@@ -25,7 +25,7 @@ evaluate:
 	uv run python -m src.models.evaluate
 
 mlflow-ui:
-	uv run mlflow ui --backend-store-uri sqlite:./tmp/mlflow_house_price.db --port 5000
+	uv run mlflow ui --backend-store-uri sqlite:///./tmp/mlflow_house_price.db --port 5000
 
 serve:
 	uv run uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
