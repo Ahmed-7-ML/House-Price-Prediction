@@ -1,0 +1,46 @@
+# Workflow name
+name: CI
+
+# Trigger Events (Push, PR)
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+
+# Tasks when Trigger
+jobs:
+    test:
+        # Select VM on Github
+        runs-on: ubuntu-latest
+        steps:
+            # Step1: Load the Code on the VM
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            # Step2: Install Python on the VM
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: "3.12"
+
+            # Step3: Install UV & Dependencies
+            - name: Install UV
+              uses: astral-sh/setup-uv@v3
+
+            - name: Install Dependencies
+              run: uv sync --extra dev
+
+            # Step4: Code Linting
+            - name: Lint with Ruff
+              run: uv run ruff check src/
+              # run: uv run ruff check src/ || true
+              # Even the Code Linting Failed -> Don't stop the workflow (|| true).
+
+            # Step5: Run tests
+            - name: Run Tests
+              run: uv run pytest tests/ -v -q
+
+            - name: Smoke Import Check
+              run: |
+                uv run python -c "from src.config.settings import get_settings; print(get_settings().project_name)"
