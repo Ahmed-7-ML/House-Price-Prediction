@@ -2,11 +2,12 @@
 Central configuration using YAML + pydantic-settings.
 """
 # ---> Imports
-import yaml
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
-from functools import lru_cache
+
+import yaml
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # ---> Root Directory
 ROOT_DIR = Path(__file__).resolve().parents[2]

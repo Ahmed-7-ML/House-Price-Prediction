@@ -5,10 +5,12 @@ CLI entrypoint using Typer.
 Run with: uv run house-price --help
           uv run python -m src.cli
 """
-from typing import Optional
+
 import typer
 import uvicorn
 from rich.console import Console
+
+from src.data.eda import run_eda
 
 # Ingest, Preprocess and Show EDA
 from src.data.ingest import ingest_raw_data
@@ -52,7 +54,7 @@ def prepare_features():
 
 
 @app.command()
-def train(model: Optional[str] = typer.Option(None, help="Train only this model")):
+def train(model: str | None = typer.Option(None, help="Train only this model")):
     """Train models, log to MLflow, save best model."""
     result = train_log(model_name=model)
     console.print(result)

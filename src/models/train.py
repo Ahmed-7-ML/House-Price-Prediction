@@ -187,7 +187,7 @@ def train_log(
 
     try:
         mlflow.register_model(f"runs:/{best_run_id}/model", settings.model_name)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001  # registry may be unavailable
         console.print(f"[yellow]Model registry skipped: {exc}[/yellow]")
 
     console.print(f"\n[bold green]Best model: {best_name} (R²={best_metrics['r2']:.4f})[/bold green]")

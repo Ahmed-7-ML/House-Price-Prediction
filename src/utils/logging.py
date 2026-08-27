@@ -3,7 +3,9 @@
 """
 
 import logging
+
 from rich.logging import RichHandler
+
 
 def get_logger(name: str = "house_price") -> logging.Logger:
     logging.basicConfig(

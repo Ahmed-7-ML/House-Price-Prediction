@@ -3,6 +3,9 @@
 install:
 	uv sync --extra dev
 
+lint:
+	uv run ruff check src/ --fix
+
 pipeline:
 	uv run house-price pipeline
 

@@ -1,7 +1,7 @@
 """
 Feast feature store integration helpers.
 """
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
@@ -31,7 +31,7 @@ def prepare_feature_store_data() -> None:
     """Write Feast offline sources with entity_id and event_timestamp."""
     df = _load_features_df().reset_index(drop=True)
     df["entity_id"] = df.index.astype(int)
-    base_ts = datetime(2025, 1, 1)
+    base_ts = datetime(2025, 1, 1, tzinfo=UTC)
     df["event_timestamp"] = [base_ts + timedelta(hours=i) for i in range(len(df))]
 
     repo_data = settings.feature_repo_path / "data"
@@ -98,7 +98,7 @@ def get_training_features_from_store() -> pd.DataFrame:
         )
         console.print("[green]Retrieved features via Feast feature store[/green]")
         return training_df
-    except Exception as exc:
+    except Exception as exc: # noqa: BLE001  # Feast may raise various errors
         console.print(f"[yellow]Feast not ready ({exc}). Falling back to local data.[/yellow]")
         return _load_features_df()
 

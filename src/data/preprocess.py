@@ -54,7 +54,7 @@ def _save_df(df: pd.DataFrame, path: Path) -> None:
         df.to_parquet(parquet_path, index=False)
         console.print(f"[green]Saved parquet: {parquet_path}[/green]")
         return
-    except Exception as exc:
+    except Exception(OSError, ValueError) as exc:
         console.print(f"[yellow]Parquet save failed ({exc}); falling back to pickle[/yellow]")
 
     pkl = path.with_suffix(".pkl")

@@ -4,10 +4,11 @@ Data ingestion: load California Housing dataset and persist as CSV.
 """
 
 # ---> Imports
-from sklearn.datasets import fetch_california_housing
 import pandas as pd
-from src.config.settings import get_settings
 from rich.console import Console
+from sklearn.datasets import fetch_california_housing
+
+from src.config.settings import get_settings
 
 # ---> Console and Settings
 console = Console()
