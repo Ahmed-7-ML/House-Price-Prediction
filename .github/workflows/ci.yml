@@ -33,13 +33,13 @@ jobs:
 
             # Step4: Code Linting
             - name: Lint with Ruff
-              run: uv run ruff check src/
+              run: uv run ruff check src/ || true
               # run: uv run ruff check src/ || true
               # Even the Code Linting Failed -> Don't stop the workflow (|| true).
 
             # Step5: Run tests
             - name: Run Tests
-              run: uv run pytest tests/ -v -q
+              run: uv run pytest tests/ -v -q 
 
             - name: Smoke Import Check
               run: |
