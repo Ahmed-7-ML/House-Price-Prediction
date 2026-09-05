@@ -29,7 +29,7 @@ features:
 
 model:
   experiment_name: house_price_prediction
-  tracking_uri: sqlite:///tmp/mlflow_house_price.db
+  tracking_uri: sqlite:///./tmp/mlflow_house_price.db
   registry_uri: mlruns
   models_to_try:
     - linear_regression

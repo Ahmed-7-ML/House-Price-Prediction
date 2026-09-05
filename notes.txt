@@ -18,3 +18,12 @@ uv cache clean
 
 تنظيف مساحة ال Docker
 docker system prune -a
+
+-----
+
+Create a SSH Key
+
+[TERMINAL]
+ssh-keygen -t ed25519 -C "your_email@example.com"
+cat ~/.ssh/id_ed25519.pub
+ssh -T git@github.com 

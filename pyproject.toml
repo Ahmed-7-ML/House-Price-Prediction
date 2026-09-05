@@ -5,8 +5,10 @@ description = "End-to-end MLOps system for California house price prediction"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "evidently>=0.7.21",
     "fastapi>=0.115.0",
     "feast>=0.47.0",
+    "ipykernel>=7.3.0",
     "joblib>=1.4.0",
     "matplotlib>=3.9.0",
     "mlflow>=2.14.0",

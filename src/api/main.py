@@ -5,8 +5,9 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import joblib
+import time
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from rich.console import Console
 
@@ -14,8 +15,34 @@ from src.api.schemas import BatchPredictionResponse, HouseFeatures, PredictionRe
 from src.config.settings import get_settings
 from src.data.preprocess import create_engineered_features
 
+# Prometheus Monitoring
+from prometheus_client import (
+    Counter, 
+    Histogram, 
+    Gauge, 
+    generate_latest,
+    CONTENT_TYPE_LATEST
+)
+
+# ---> Define the Console, Settings & Prometheus Metrics
 settings = get_settings()
 console = Console()
+
+PREDICT_COUNT = Counter(
+    name = "house_price_prediction_total",
+    documentation = "Total prediction requests",
+    labelnames = ["status"], # Success / Error
+)
+
+PREDICT_LATENCY = Histogram(
+    "house_price_prediction_latency_seconds",
+    "Prediction latency in seconds",
+)
+
+MODEL_LOADED = Gauge(
+    "house_price_model_loaded",
+    "1 if model is loaded, else 0",
+)
 
 _model: Any = None
 _feature_names: list[str] = []
@@ -64,7 +91,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 def _predict_frame(features: HouseFeatures) -> float:
     if _model is None:
         raise HTTPException(status_code=503, detail="Model not loaded. Train the model first.")
@@ -102,11 +128,38 @@ def health():
         "model_path": str(_model_path),
     }
 
+@app.get("/metrics")
+def metrics():
+    MODEL_LOADED.set(1 if _model is not None else 0)
+    return Response(
+        generate_latest(),
+        media_type = CONTENT_TYPE_LATEST,
+    )
+
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(features: HouseFeatures):
-    pred = _predict_frame(features)
-    return PredictionResponse(predicted_price=round(pred, 4))
+    start = time.perf_counter()
+    try:
+        pred = _predict_frame(features)
+        log_row = {
+            **features,
+            "prediction": pred
+        }
+        pd.DataFrame([log_row]).to_csv(
+            "data/monitoring/predictions_log.csv",
+            mode="a",
+            header=not Path("data/monitoring/predictions_log.csv").exists(),
+            index=False,
+        )
+        # Increment Counter
+        PREDICT_COUNT.labels(status="success").inc()
+        return PredictionResponse(predicted_price=round(pred, 4))
+    except Exception:
+        PREDICT_COUNT.labels(status="error").inc()
+        raise
+    finally:
+        PREDICT_LATENCY.observe(time.perf_counter() - start)
 
 
 @app.post("/predict/batch", response_model=BatchPredictionResponse)

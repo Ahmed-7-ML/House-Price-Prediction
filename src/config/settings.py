@@ -5,7 +5,6 @@ Central configuration using YAML + pydantic-settings.
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
-
 import yaml
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -33,7 +32,7 @@ class Settings(BaseSettings):
     feature_repo_path: Path = ROOT_DIR / "feature_repo"
     models_dir: Path = ROOT_DIR / "models" / "artifacts"
     eda_output_dir: Path = ROOT_DIR / "notebooks" / "eda_figures"
-    mlflow_tracking_uri: str = f"sqlite:///{(ROOT_DIR / 'tmp' / 'mlflow_house_price.db').as_posix()}"
+    mlflow_tracking_uri: str = "sqlite:///./tmp/mlflow_house_price.db"
 
     # Data Split
     test_size : float = 0.2

@@ -1,10 +1,10 @@
 """
 Model training with MLflow experiment tracking.
 """
+
+# ---> Imports
 from __future__ import annotations
-
 from typing import Any
-
 import joblib
 import mlflow
 import mlflow.sklearn
@@ -23,10 +23,11 @@ from src.data.preprocess import preprocess_split
 from src.features.pipeline import NUMERICAL_FEATURES, build_preprocessor
 from src.features.store import get_training_features_from_store
 
+# ---> Define the Console & Settings
 console = Console()
 settings = get_settings()
 
-
+# ---> To Get the Model Portfolio
 def get_model_zoo(random_state: int = 42) -> dict[str, Any]:
     return {
         "linear_regression": LinearRegression(),
@@ -52,7 +53,7 @@ def get_model_zoo(random_state: int = 42) -> dict[str, Any]:
         ),
     }
 
-
+# ---> Regression Model Evaluation
 def evaluate(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, float]:
     return {
         "rmse": float(np.sqrt(mean_squared_error(y_true, y_pred))),
@@ -60,7 +61,7 @@ def evaluate(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, float]:
         "r2": float(r2_score(y_true, y_pred)),
     }
 
-
+# ---> Prepare & Split Data into Train-Test
 def _split_from_feature_store() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     df = get_training_features_from_store()
     if "MedHouseVal" not in df.columns:
@@ -70,7 +71,7 @@ def _split_from_feature_store() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, 
     y = df["MedHouseVal"]
     return train_test_split(X, y, test_size=settings.test_size, random_state=settings.seed)
 
-
+# ---> Log Params/Metrics/Model using MLFlow
 def _log_sklearn_model(pipeline: Pipeline) -> None:
     trusted = ["numpy.dtype", "numpy._core.multiarray._reconstruct", "numpy.ndarray"]
     try:
@@ -85,10 +86,11 @@ def _log_sklearn_model(pipeline: Pipeline) -> None:
         mlflow.sklearn.log_model(
             sk_model=pipeline, 
             artifact_path="model",
-             registered_model_name=settings.model_name,
+            registered_model_name=settings.model_name,
             skops_trusted_types=trusted,
             )
 
+# ---> Start Model Training & Logging
 def train_log(
     model_name: str | None = None,
     use_feature_store: bool = False,

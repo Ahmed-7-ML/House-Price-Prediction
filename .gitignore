@@ -39,3 +39,6 @@ feature_repo/data/registry.db
 
 # Notebooks output
 notebooks/eda_figures/
+
+.ruff_cache/
+.pytest_cache

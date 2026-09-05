@@ -24,15 +24,38 @@ services:
     restart: unless-stopped
 
   mlflow:
-    image: ghcr.io/mlflow/mlflow:v2.14.1
+    image: ghcr.io/mlflow/mlflow:v3.15.1
     ports:
       - "5000:5000"
+    working_dir: /app
     command: >
       mlflow server
       --host 0.0.0.0
       --port 5000
-      --backend-store-uri sqlite:///tmp/mlflow_house_price.db
-      --default-artifact-root ./tmp/artifacts
+      --backend-store-uri sqlite:////app/tmp/mlflow_house_price.db
+      --default-artifact-root /app/mlruns
     volumes:
-      - ./tmp/artifacts:/tmp/artifacts
+      - ./tmp:/app/tmp
+      - ./mlruns:/app/mlruns
     restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.54.0
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+  
+  grafana:
+    image: grafana/grafana:11.1.0
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
