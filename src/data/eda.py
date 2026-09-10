@@ -1,5 +1,5 @@
 """
-Exploratory data analysis with Matplotlib and Seaborn.
+Exploratory data analysis with matplotlib and seaborn.
 """
 from pathlib import Path
 
